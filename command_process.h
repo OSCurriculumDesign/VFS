@@ -14,7 +14,8 @@ public:
     void write(QString command);
     QString readAllStandardOutput();
     QString readAllStandardError();
-
+private:
+    QString outputStr;
 signals:
     void readyReadStandardOutput();
     void readyReadStandardError();

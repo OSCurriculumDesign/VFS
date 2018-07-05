@@ -19,9 +19,11 @@ protected:
 
 private:
     Ui::Widget *ui;
+    int tabNum;
+    void AddTab();
 
 private slots:
-    void AddTab();
+    void tabCloseRequested(int);
 };
 
 #endif // WIDGET_H

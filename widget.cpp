@@ -2,6 +2,8 @@
 #include "ui_widget.h"
 #include "qconsolewidget.h"
 #include "qdebug.h"
+#include "qmessagebox.h"
+#include <QKeyEvent>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -9,49 +11,51 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // init console tabs
     QConsoleWidget *console = new QConsoleWidget(this);
-    QConsoleWidget *console2 = new QConsoleWidget(this);
-    QConsoleWidget *console3 = new QConsoleWidget(this);
-
+    ui->tabWidget->removeTab(0);
     ui->tabWidget->addTab(console,"tab1");
-    ui->tabWidget->addTab(console2,"tab2");
-    ui->tabWidget->addTab(console3,"tab3");
+    tabNum = 1;
+    connect(ui->tabWidget,
+            SIGNAL(tabCloseRequested(int)),this,
+            SLOT(tabCloseRequested(int)));
+    //init tree widget
+    QTreeWidget *tree = ui->treeWidget;
+    QTreeWidgetItem *items1 = new QTreeWidgetItem(tree,
+                                QStringList(QString("num_1")));
+    QTreeWidgetItem *items2 = new QTreeWidgetItem(items1,
+                                QStringList(QString("num_1")));
+    QTreeWidgetItem *items3 = new QTreeWidgetItem(tree,
+                                QStringList(QString("num_3")));
+}
 
-    QTextEdit *t = new QTextEdit("123",this);
-
-//    QTextEdit *text = new QTextEdit("123",this);
-//    ui->verticalLayoutLeft->addWidget(console);
-//    ui->verticalLayoutRight->addWidget(console);
-
-    QAction *actionA = new QAction(this);
-    actionA->setShortcut(QKeySequence(tr("Ctrl+t")));
-    connect(actionA, &QAction::triggered, this, &Widget::AddTab);
-
+void Widget::tabCloseRequested(int index){
+    ui->tabWidget->removeTab(index);
 }
 
 void Widget::AddTab(){
-    qDebug()<<"123";
+    ui->tabWidget->addTab(new QConsoleWidget(this),
+                          QString("tab%1").arg(++tabNum));
 }
 
 void Widget::keyPressEvent(QKeyEvent *event)
 {
-//    switch (event->key())
-//    {
-//        case Qt::Key_A:// 被窗口button占用，失效，不能处理
-//        {
-//            if (event->modifiers() & Qt::ControlModifier)
-//            {
-//                QMessageBox::about(NULL, "Ctr+A", "Ctr+A");
-//            }
-//            break;
-//        }
-//        default:
-//        {
-//            qDebug() << event->key();
-//        }
-//    }
+    switch (event->key())
+    {
+        case Qt::Key_T:
+        {
+            if (event->modifiers() & Qt::ControlModifier)
+            {
+//                QMessageBox::about(NULL, "add a tab", "add a tab");
+                AddTab();
+            }
+            break;
+        }
+        default:
+        {
+        }
+    }
 }
-
 
 Widget::~Widget()
 {

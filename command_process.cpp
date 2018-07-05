@@ -30,13 +30,14 @@ void CProcess::write(QString command){
 
         }
 
+        outputStr = commands[0];
         emit readyReadStandardOutput();
     }
 }
 
 QString CProcess::readAllStandardOutput()
 {
-    return "out";
+    return outputStr;
 }
 
 QString CProcess::readAllStandardError()
